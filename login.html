@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gestão PEI</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-box">
+            <img src="/src/logo.png" alt="logo Escola" id="logo">
+            <h2>Barão de Jundiaí</h2>
+            <p>Insira suas credenciais para continuar</p>
+            
+            <!-- Div para mostrar os avisos de erro ou status pendente -->
+            <div id="mensagem" class="mensagem oculta"></div>
+
+            <form id="formLogin">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" id="btnEntrar">Entrar</button>
+            </form>
+
+            <div class="links-uteis">
+                <a href="/pages/cadastro/index.html">Primeiro acesso? Criar conta</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script nativo para conversar com a nossa API -->
+    <script src="login.js"></script>
+</body>
+</html>
