@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horário de Aulas - Gestão PEI</title>
+    
+    <!-- Puxa o seu CSS principal (Menu lateral, cores base, etc) -->
+    <link rel="stylesheet" href="./style.css"> 
+    
+    <style>
+        /* ==========================================
+           CSS ESPECÍFICO DA TELA DE HORÁRIOS
+           ========================================== */
+        
+        /* O Cartão Branco onde fica a tabela */
+        .card-horario {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Cabeçalho dentro do cartão (Título e Botão de Imprimir) */
+        .horario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .horario-header h2 { color: #0f172a; font-size: 1.3rem; margin-bottom: 5px; }
+        .horario-header p { color: #64748b; font-size: 0.95rem; }
+
+        /* Botão de Imprimir */
+        .btn-print {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-print:hover { background-color: #2563eb; }
+
+        /* Container da Tabela (Permite rolar no celular) */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
+        }
+
+        .horario-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px; /* Garante que não esprema muito no PC */
+        }
+
+        /* Cabeçalho da Tabela (Dias da semana) */
+        .horario-table th {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 14px 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 2px solid #334155;
+            width: 17%;
+        }
+
+        .horario-table th.time-col {
+            width: 15%;
+            background-color: #0f172a;
+        }
+
+        /* Células da Tabela */
+        .horario-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0; 
+            vertical-align: top;
+            height: 75px;
+        }
+
+        /* Coluna dos Horários (Esquerda) */
+        .time-cell {
+            background-color: #f8fafc;
+            font-weight: 700;
+            color: #334155;
+            text-align: center !important;
+            vertical-align: middle !important;
+            font-size: 0.85rem;
+            padding: 10px !important;
+        }
+
+        .time-cell small {
+            display: block;
+            font-weight: 400;
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        /* ==========================================
+           CÉLULA EDITÁVEL (A Mágica do Clique)
+           ========================================== */
+        .editable {
+            height: 100%;
+            min-height: 75px;
+            padding: 12px 8px;
+            background-color: #ffffff;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .editable:hover { 
+            background-color: #f1f5f9; 
+            border-color: #cbd5e1;
+        }
+
+        /* Textos dentro do quadradinho de aula */
+        .subject { font-weight: 700; font-size: 0.85rem; color: #0f172a; margin-bottom: 4px; text-align: center; }
+        .details { font-size: 0.75rem; color: #64748b; text-align: center; }
+
+        /* Linhas de Intervalo e Jantar */
+        .break-row td {
+            background-color: #f1f5f9;
+            text-align: center !important;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px !important;
+            height: auto;
+        }
+        .break-row.major-break td {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* ==========================================
+           MODAL (Janela Flutuante de Escolha)
+           ========================================== */
+        .modal-overlay {
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); /* Fundo escuro transparente */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000;
+            backdrop-filter: blur(2px); /* Efeito moderno de desfoque */
+        }
+
+        .modal-content {
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-content h3 { color: #0f172a; margin-bottom: 5px; font-size: 1.2rem; }
+        
+        .modal-actions {
+            display: flex; 
+            gap: 10px; 
+            margin-top: 25px;
+        }
+        .modal-actions button { flex: 1; padding: 12px; font-size: 1rem; }
+
+        /* ==========================================
+           MODO IMPRESSÃO
+           ========================================== */
+        @media print {
+            .sidebar, .topbar, .btn-print, .input-group { display: none !important; }
+            .dashboard-container { display: block; height: auto; }
+            .main-content { overflow: visible; background-color: white; }
+            .content-area { padding: 0; }
+            .card-horario { box-shadow: none; padding: 0; }
+            .table-responsive { border: none; }
+        }
+    </style>
+</head>
+<body class="dashboard-container">
+    
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="/src/logo.png" alt="Logo" style="width: 80px; margin-bottom: 10px;">
+            <h2>Gestão PEI</h2>
+        </div>
+        <nav class="menu">
+            <p class="menu-label">DIA A DIA</p>
+            <a href="../index.html">Painel Inicial</a>
+            <a href="/pages/gestao/disciplinas/index.html">Gestão Acadêmica</a>
+            <a href="../horario/index.html" class="active">Horário</a>
+            <a href="#">Ocorrências</a>
+            <a href="#">Agendamento Notebook</a>
+            <a href="#">Cronograma</a>
+            <a href="#">Minha Agenda</a>
+
+            <p class="menu-label">ACOMPANHAMENTO</p>
+            <a href="#">Tutoria (Diários)</a>
+            <a href="#">Apoio Presencial</a>
+            <a href="#">Rendimento Escolar</a>
+
+            <p class="menu-label">PEDAGÓGICO</p>
+            <a href="#">Atas e Materiais</a>
+            <a href="#">Guias de Aprendizagem</a>
+            <a href="#">Critérios de Avaliação</a>
+        </nav>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Horário de Aulas</h1>
+                <p>Configure a grade horária das turmas de forma interativa.</p>
+            </div>
+            <div class="user-profile">Direção</div>
+        </header>
+        
+        <section class="content-area">
+            
+            <div class="card-horario">
+                
+                <div class="horario-header">
+                    <div>
+                        <h2>Montagem da Grade Curricular</h2>
+                        <p>Selecione a turma abaixo. Depois, clique nos quadros em branco para alocar o professor.</p>
+                        
+                        <!-- FILTRO DE TURMA -->
+                        <div class="input-group" style="margin-top: 15px; max-width: 300px;">
+                            <label for="filtroTurma">Selecione a Turma:</label>
+                            <select id="filtroTurma" onchange="carregarGrade()">
+                                <option value="">Carregando turmas...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-print" onclick="window.print()">
+                        🖨️ Imprimir PDF
+                    </button>
+                </div>
+
+                <!-- TABELA DE HORÁRIOS (Fica invisível até selecionar a turma) -->
+                <div class="table-responsive">
+                    <table class="horario-table" id="tabelaGrade" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th class="time-col">Horário</th>
+                                <th>Segunda-feira</th>
+                                <th>Terça-feira</th>
+                                <th>Quarta-feira</th>
+                                <th>Quinta-feira</th>
+                                <th>Sexta-feira</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoGrade">
+                            <!-- O JavaScript vai injetar as linhas aqui automaticamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 MODAL DE SELEÇÃO DE AULA
+                 ========================================== -->
+<!-- MODAL DE SELEÇÃO DE AULA -->
+            <div id="modalAula" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <h3>Definir Aula</h3>
+                    <p id="textoSlot" style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;"></p>
+                    
+                    <div class="input-group">
+                        <label for="selectAtribuicao">Professor e Disciplina:</label>
+                        <select id="selectAtribuicao"></select>
+                    </div>
+
+                    <!-- NOVO CAMPO: Quantidade de aulas -->
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label for="qtdAulas">Quantidade de aulas seguidas:</label>
+                        <select id="qtdAulas">
+                            <option value="1">1 aula (Apenas este horário)</option>
+                            <option value="2">2 aulas seguidas (Dobradinha)</option>
+                            <option value="3">3 aulas seguidas</option>
+                            <option value="4">4 aulas seguidas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn-acao btn-aprovar" onclick="salvarAula()">Salvar Horário</button>
+                        <button class="btn-acao" style="background-color: #f59e0b; color: white;" onclick="limparAula()">Deixar Vago</button>
+                        <button class="btn-acao btn-recusar" onclick="fecharModal()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Puxa a inteligência do arquivo JavaScript -->
+    <script src="./script.js"></script>
+</body>
+</html>

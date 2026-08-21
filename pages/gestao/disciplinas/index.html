@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Acadêmica - PEI</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* Estilos do Formulário em Linha */
+        .form-inline {
+            display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-end;
+            background-color: #f8fafc; padding: 20px; border-radius: 6px; border: 1px solid #e2e8f0;
+        }
+        .form-inline .input-group { margin-bottom: 0; flex: 1; }
+        .form-inline button { width: auto; padding: 10px 20px; margin-top: 0; }
+
+        /* ==========================================
+           ESTILOS DAS ABAS (TABS)
+           ========================================== */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px; /* Sobrepõe a borda inferior */
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: #3b82f6; }
+        .tab-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        /* Esconde as abas inativas */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="dashboard-container">
+    
+    <!-- BARRA LATERAL MANTIDA INTACTA -->
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="/src/logo.png" alt="Logo" style="width: 80px; margin-bottom: 10px;">
+            <h2>Gestão PEI</h2>
+        </div>
+        <nav class="menu">
+            <p class="menu-label">DIA A DIA</p>
+            <a href="../index.html">Painel Inicial</a>
+            <a href="/pages/gestao/disciplinas/index.html" class="active">Gestão Acadêmica</a>
+            <a href="../horario/index.html">Horário</a>
+            <a href="#">Ocorrências</a>
+            <a href="#">Agendamento Notebook</a>
+            <a href="#"> Cronograma </a>
+            <a href="#">Minha Agenda</a>
+
+            <p class="menu-label">ACOMPANHAMENTO</p>
+            <a href="#">Tutoria (Diários)</a>
+            <a href="#">Apoio Presencial</a>
+            <a href="#">Rendimento Escolar</a>
+
+            <p class="menu-label">PEDAGÓGICO</p>
+            <a href="#">Atas e Materiais</a>
+            <a href="#">Guias de Aprendizagem</a>
+            <a href="#"> Critérios de Avaliação</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Gestão Acadêmica</h1>
+                <p>Gerencie disciplinas, turmas e a atribuição de aulas dos professores.</p>
+            </div>
+            <div class="user-profile">Direção</div>
+        </header>
+        
+        <section class="content-area">
+            <div class="card-tabela">
+                
+                <!-- MENU DAS ABAS -->
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="abrirAba(event, 'aba-disciplinas')">Disciplinas</button>
+                    <button class="tab-btn" onclick="abrirAba(event, 'aba-salas')">Salas / Turmas</button>
+                    <button class="tab-btn" onclick="abrirAba(event, 'aba-atribuicao')">Atribuição de Professores</button>
+                </div>
+
+                <div id="mensagem" class="mensagem oculta"></div>
+
+                <!-- ==========================================
+                     ABA 1: DISCIPLINAS (Seu código original)
+                     ========================================== -->
+                <div id="aba-disciplinas" class="tab-content active">
+                    <form id="formDisciplina" class="form-inline">
+                        <input type="hidden" id="disciplinaId" value="">
+                        <div class="input-group">
+                            <label for="nomeDisciplina">Nome da Disciplina</label>
+                            <input type="text" id="nomeDisciplina" required placeholder="Ex: Eletiva II">
+                        </div>
+                        <div class="input-group" style="flex: 0.5;">
+                            <label for="qtdAulas">Qtd. Aulas/Semana</label>
+                            <input type="number" id="qtdAulas" required min="1" max="10" placeholder="Ex: 2">
+                        </div>
+                        <button type="submit" id="btnSalvar" class="btn-acao btn-aprovar">Adicionar</button>
+                        <button type="button" id="btnCancelar" class="btn-acao btn-recusar" style="display: none;" onclick="cancelarEdicao()">Cancelar</button>
+                    </form>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Disciplina</th>
+                                <th>Aulas Semanais</th>
+                                <th style="width: 150px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaDisciplinas">
+                            <tr><td colspan="3" style="text-align: center;">Carregando disciplinas...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ==========================================
+                     ABA 2: SALAS / TURMAS
+                     ========================================== -->
+                <div id="aba-salas" class="tab-content">
+                    <form id="formSala" class="form-inline">
+                        <div class="input-group">
+                            <label for="nomeSala">Nome da Turma</label>
+                            <input type="text" id="nomeSala" placeholder="Ex: 1ºA, 2ºB, 3ºC">
+                        </div>
+                        <div class="input-group">
+                            <label for="turnoSala">Turno</label>
+                            <select id="turnoSala">
+                                <option value="Integral">Integral (9h)</option>
+                                <option value="Manhã">Manhã (7h)</option>
+                                <option value="Tarde">Tarde (7h)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-acao btn-aprovar">Adicionar Turma</button>
+                    </form>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Turma</th>
+                                <th>Turno</th>
+                                <th style="width: 150px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaSalas">
+                            <tr><td colspan="3" style="text-align: center;">Em breve: Lista de turmas</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ==========================================
+                     ABA 3: ATRIBUIÇÃO DE PROFESSORES
+                     ========================================== -->
+                <div id="aba-atribuicao" class="tab-content">
+                    <form id="formAtribuicao" class="form-inline">
+                        <div class="input-group">
+                            <label for="selectProfessor">Professor</label>
+                            <select id="selectProfessor">
+                                <option>Selecione um professor...</option>
+                                <!-- Será preenchido pelo JS -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="selectSala">Turma</label>
+                            <select id="selectSala">
+                                <option>Selecione a turma...</option>
+                                <!-- Será preenchido pelo JS -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="selectDisc">Disciplina</label>
+                            <select id="selectDisc">
+                                <option>Selecione a disciplina...</option>
+                                <!-- Será preenchido pelo JS -->
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-acao btn-aprovar">Atribuir Aula</button>
+                    </form>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Professor</th>
+                                <th>Turma</th>
+                                <th>Disciplina</th>
+                                <th style="width: 100px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAtribuicoes">
+                            <tr><td colspan="4" style="text-align: center;">Em breve: Lista de atribuições</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script src="./script.js"></script>
+</body>
+</html>

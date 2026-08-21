@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel da Gestão - PEI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-container">
+    
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Gestão PEI</h2>
+        </div>
+        <nav class="menu">
+            <p class="menu-label">DIA A DIA</p>
+            <a href="#" class="active">Painel Inicial</a>
+            <a href="#">Ocorrências</a>
+            <a href="#">Agendamento Notebook</a>
+            <a href="#">Mapas de Sala / Líderes</a>
+
+            <p class="menu-label">ACOMPANHAMENTO</p>
+            <a href="#">Tutoria (Diários)</a>
+            <a href="#">Carômetro</a>
+            <a href="#">Normas de Convivência</a>
+
+            <p class="menu-label">PEDAGÓGICO</p>
+            <a href="#">Atas e Materiais</a>
+            <a href="#">Guias de Aprendizagem</a>
+            <a href="#">Programa de Ação</a>
+        </nav>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Bom dia, Gestão!</h1>
+                <p>Resumo de hoje: 21 de Agosto de 2026</p>
+            </div>
+            <div class="user-profile">Diretor(a)</div>
+        </header>
+        
+        <section class="content-area">
+            
+            <!-- CARDS DE RESUMO -->
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>Ocorrências Hoje</h3>
+                    <p class="card-number">3</p>
+                    <a href="#">Ver detalhes</a>
+                </div>
+                <div class="card">
+                    <h3>Notebooks Agendados</h3>
+                    <p class="card-number">2</p>
+                    <a href="#">Ver mapa de uso</a>
+                </div>
+                <div class="card">
+                    <h3>Atendimentos de Tutoria</h3>
+                    <p class="card-number">12</p>
+                    <a href="#">Ver registros</a>
+                </div>
+                <div class="card">
+                    <h3>Eventos / Saídas</h3>
+                    <p class="card-number">0</p>
+                    <a href="#">Ver calendário</a>
+                </div>
+            </div>
+
+            <!-- PAINEL DE ATIVIDADE RECENTE -->
+            <div class="recent-activity">
+                <h2>Últimas Ocorrências Registradas</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Aluno(a)</th>
+                            <th>Turma</th>
+                            <th>Motivo</th>
+                            <th>Registrado por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>21/08 - 10:15</td>
+                            <td>João Silva</td>
+                            <td>1ºA</td>
+                            <td>Uso de celular em sala</td>
+                            <td>Prof. Marcos</td>
+                        </tr>
+                        <tr>
+                            <td>21/08 - 09:30</td>
+                            <td>Maria Souza</td>
+                            <td>2ºB</td>
+                            <td>Elogio - Ajudou colega</td>
+                            <td>Profª. Ana</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

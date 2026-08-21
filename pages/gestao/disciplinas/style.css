@@ -1,0 +1,226 @@
+/* 1. RESET E FONTES */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body { 
+    background-color: #f0f2f5; 
+    color: #333; 
+}
+
+/* 2. LAYOUT PRINCIPAL (GRID) */
+.dashboard-container { 
+    display: grid; 
+    grid-template-columns: 260px 1fr; 
+    height: 100vh; 
+    overflow: hidden; /* Evita rolagem na página inteira */
+}
+
+/* 3. BARRA LATERAL (SIDEBAR) */
+.sidebar { 
+    background-color: #3b7be3; 
+    color: white; 
+    display: flex; 
+    flex-direction: column; 
+    /* Permite rolar o menu se a tela for pequena */
+    overflow-y: auto; 
+}
+
+/* Estilizando a barra de rolagem do menu para ficar elegante */
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 4px; }
+
+.logo { 
+    padding: 20px; 
+    border-bottom: 1px solid #334155; 
+    text-align: center; 
+}
+
+/* 4. ITENS DO MENU */
+.menu {
+    padding-bottom: 20px;
+}
+
+/* Os títulos das categorias (DIA A DIA, etc) */
+.menu-label { 
+    font-size: 0.75rem; 
+    color: #94a3b8; 
+    margin: 25px 20px 10px 20px; 
+    font-weight: bold; 
+    letter-spacing: 1px; 
+}
+
+.menu a { 
+    display: block; 
+    color: #cbd5e1; 
+    text-decoration: none; 
+    padding: 12px 20px; 
+    transition: background-color 0.2s, border-left 0.2s; 
+    border-left: 4px solid transparent; /* Espaço invisível para não empurrar o texto no hover */
+}
+
+.menu a:hover, .menu a.active { 
+    background-color: #334155; 
+    color: white; 
+    border-left: 4px solid #3b82f6; 
+}
+
+/* 5. ÁREA PRINCIPAL E CABEÇALHO */
+.main-content { 
+    display: flex; 
+    flex-direction: column; 
+    background-color: #f8fafc;
+    overflow-y: auto; /* Apenas o conteúdo rola, o menu fica fixo */
+}
+
+.topbar { 
+    background-color: white; 
+    padding: 20px 30px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    position: sticky;
+    top: 0;
+}
+
+.topbar h1 { font-size: 1.5rem; color: #0f172a; }
+.topbar p { color: #64748b; font-size: 0.9rem; margin-top: 5px; }
+
+.user-profile { 
+    background-color: #e2e8f0; 
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    font-weight: bold; 
+    color: #1e293b;
+}
+
+/* 6. CONTEÚDO E TABELAS */
+.content-area { 
+    padding: 30px; 
+}
+
+.card-tabela { 
+    background-color: white; 
+    padding: 25px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+}
+
+.card-tabela h2 { 
+    font-size: 1.25rem; 
+    margin-bottom: 20px; 
+    color: #0f172a; 
+}
+
+.data-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.data-table th, .data-table td { 
+    text-align: left; 
+    padding: 15px; 
+    border-bottom: 1px solid #e2e8f0; 
+}
+
+.data-table th { 
+    background-color: #f8fafc; 
+    color: #475569; 
+    font-weight: 600; 
+}
+
+.data-table tr:hover { 
+    background-color: #f1f5f9; 
+}
+
+/* 7. BOTÕES DE AÇÃO (Aprovar / Recusar) */
+.btn-acao { 
+    padding: 8px 12px; 
+    border: none; 
+    border-radius: 4px; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+    margin-right: 5px; 
+    font-size: 0.85rem; 
+    transition: 0.2s;
+}
+
+.btn-aprovar { background-color: #10b981; }
+.btn-aprovar:hover { background-color: #059669; }
+
+.btn-recusar { background-color: #ef4444; }
+.btn-recusar:hover { background-color: #dc2626; }
+
+/* 8. MENSAGENS DE ALERTA */
+.mensagem { 
+    padding: 12px; 
+    border-radius: 4px; 
+    margin-bottom: 20px; 
+    font-size: 0.95rem; 
+    text-align: center; 
+    font-weight: 500;
+}
+.mensagem.oculta { display: none; }
+.mensagem.sucesso { background-color: #dcfce7; color: #15803d; border: 1px solid #4ade80; }
+.mensagem.erro { background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+/* ==========================================
+   8. ESTILOS DE FORMULÁRIO (INPUTS E LABELS)
+   ========================================== */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.input-group input, 
+.input-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: white;
+}
+
+.input-group input:focus, 
+.input-group select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Efeito de brilho azul ao clicar */
+}
+
+/* 9. FORMULÁRIOS EM LINHA (Para a tela de Disciplinas) */
+.form-inline {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: flex-end;
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.form-inline .input-group { 
+    margin-bottom: 0; 
+    flex: 1; 
+}
+
+.form-inline button { 
+    width: auto; 
+    padding: 10px 20px; 
+    margin-top: 0; 
+    height: 42px; /* Mantém o botão da mesma altura do input */
+}

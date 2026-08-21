@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Acessos - PEI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-container">
+    
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="/src/logo.png" alt="Logo" style="width: 80px; margin-bottom: 10px;">
+            <h2>Gestão PEI</h2>
+        </div>
+        <nav class="menu">
+            <p class="menu-label">DIA A DIA</p>
+            <a href="#" class="active">Painel Inicial</a>
+            <a href="/pages/gestao/disciplinas/index.html">Gestão Acadêmica</a>
+            <a href="../gestao/horario/index.html">Horário</a>
+            <a href="#">Ocorrências</a>
+            <a href="#">Agendamento Notebook</a>
+            <a href="#"> Cronograma </a>
+            <a href="#">Minha Agenda</a>
+
+            <p class="menu-label">ACOMPANHAMENTO</p>
+            <a href="#">Tutoria (Diários)</a>
+            <a href="#">Apoio Presencial</a>
+            <a href="#">Rendimento Escolar  </a>
+
+
+            <p class="menu-label">PEDAGÓGICO</p>
+            <a href="#">Atas e Materiais</a>
+            <a href="#">Guias de Aprendizagem</a>
+            <a href="#"> Critérios de Avaliação</a>
+        </nav>
+    </aside>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h1>Gestão de Acessos</h1>
+                <p>Aprove ou recuse novos professores no sistema.</p>
+            </div>
+            <div class="user-profile">Gestão</div>
+        </header>
+        
+        <section class="content-area">
+            
+            <div class="card-tabela">
+                <h2>Cadastros Pendentes</h2>
+                <div id="mensagem" class="mensagem oculta"></div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaPendentes">
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Carregando usuários...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
