@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendário Compartilhado dos Professores</title>
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; margin: 0; padding: 20px; }
+    .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+    #calendar { margin-top: 20px; }
+    
+    /* Modal / Form Styling */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 400px; }
+    .modal-content h3 { margin-top: 0; color: #333; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+    .buttons { display: flex; justify-content: flex-end; gap: 10px; }
+    .btn { padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-save { background: #27ae60; color: white; }
+    .btn-cancel { background: #95a5a6; color: white; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📅 Agendamento de Professores</h1>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Modal para adicionar novo evento -->
+  <div class="modal" id="eventModal">
+    <div class="modal-content">
+      <h3>Marcar Compromisso</h3>
+      <div class="form-group">
+        <label for="profName">Nome do Professor / Evento:</label>
+        <input type="text" id="profName" placeholder="Ex: Prof. Carlos - Lab de Informática">
+      </div>
+      <div class="buttons">
+        <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-save" onclick="saveEvent()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <script>
+    // 1. CONFIGURAÇÃO DO FIREBASE (Substitua pelos seus dados do Firebase)
+    const firebaseConfig = {
+      apiKey: "SEU_API_KEY",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
+      projectId: "SEU_PROJETO",
+      storageBucket: "SEU_PROJETO.appspot.com",
+      messagingSenderId: "SEU_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    // Inicializa o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const eventsRef = database.ref('eventos');
+
+    let calendar;
+    let selectedDateInfo = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'pt-br',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+          today: 'Hoje',
+          month: 'Mês',
+          week: 'Semana',
+          day: 'Dia'
+        },
+        selectable: true,
+        // Ao clicar em uma data do calendário
+        select: function(info) {
+          selectedDateInfo = info;
+          document.getElementById('eventModal').style.display = 'flex';
+        }
+      });
+
+      calendar.render();
+
+      // 2. SINCRONIZAÇÃO EM TEMPO REAL
+      // Escuta qualquer mudança no banco de dados do Firebase
+      eventsRef.on('value', (snapshot) => {
+        calendar.removeAllEvents(); // Limpa a tela local
+        const data = snapshot.val();
+        
+        if (data) {
+          Object.keys(data).forEach(key => {
+            const ev = data[key];
+            calendar.addEvent({
+              id: key,
+              title: ev.title,
+              start: ev.start,
+              end: ev.end,
+              allDay: ev.allDay
+            });
+          });
+        }
+      });
+    });
+
+    // Função para fechar o modal
+    function closeModal() {
+      document.getElementById('eventModal').style.display = 'none';
+      document.getElementById('profName').value = '';
+    }
+
+    // Função para salvar o evento no Firebase
+    function saveEvent() {
+      const title = document.getElementById('profName').value;
+      if (title && selectedDateInfo) {
+        // Envia para o Firebase Realtime Database
+        eventsRef.push({
+          title: title,
+          start: selectedDateInfo.startStr,
+          end: selectedDateInfo.endStr,
+          allDay: selectedDateInfo.allDay
+        });
+
+        closeModal();
+      } else {
+        alert("Por favor, digite o nome do professor ou evento.");
+      }
+    }
+  </script>
+</body>
+</html>
