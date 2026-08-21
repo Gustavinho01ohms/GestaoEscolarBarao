@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro de Horários Interativo (14h20 às 21h30)</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .btn-print {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-print:hover {
+            background-color: #1d4ed8;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 12px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 2px solid #334155;
+            width: 17%;
+        }
+
+        th.time-col {
+            width: 15%;
+            background-color: #0f172a;
+        }
+
+        td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            vertical-align: top;
+            height: 65px;
+        }
+
+        .time-cell {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .time-cell small {
+            display: block;
+            font-weight: 400;
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        /* Célula Editável */
+        .editable {
+            height: 100%;
+            min-height: 50px;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: #ffffff;
+            border: 1px solid transparent;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .editable:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .editable:focus {
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .subject {
+            font-weight: 700;
+            font-size: 13px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .details {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Linhas de Intervalo */
+        .break-row td {
+            background-color: #f8fafc;
+            text-align: center;
+            color: #475569;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px;
+            height: auto;
+        }
+
+        .break-row.major-break td {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .btn-print { display: none; }
+            .table-responsive { border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>Quadro de Horários Interativo</h1>
+            <p>Clique em qualquer disciplina, professor ou sala para editar diretamente no navegador.</p>
+        </div>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+    </header>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th class="time-col">Horário</th>
+                    <th>Segunda-feira</th>
+                    <th>Terça-feira</th>
+                    <th>Quarta-feira</th>
+                    <th>Quinta-feira</th>
+                    <th>Sexta-feira</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1ª Aula -->
+                <tr>
+                    <td class="time-cell">14:20 - 15:10<small>1ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Matemática</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Português</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Física / Ciências</div><div class="details">Prof. Roberto | Lab. 01</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">História</div><div class="details">Profª. Fernanda | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Matemática</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                </tr>
+
+                <!-- 2ª Aula -->
+                <tr>
+                    <td class="time-cell">15:10 - 16:00<small>2ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Matemática</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Português</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Geografia</div><div class="details">Prof. Lucas | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">História</div><div class="details">Profª. Fernanda | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Inglês</div><div class="details">Prof. John | Sala 05</div></div></td>
+                </tr>
+
+                <!-- 3ª Aula -->
+                <tr>
+                    <td class="time-cell">16:00 - 16:50<small>3ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">História</div><div class="details">Profª. Fernanda | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Química</div><div class="details">Prof. Roberto | Lab. 01</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Português</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Geografia</div><div class="details">Prof. Lucas | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Artes</div><div class="details">Profª. Marina | Ateliê</div></div></td>
+                </tr>
+
+                <!-- 1º Intervalo -->
+                <tr class="break-row">
+                    <td class="time-cell" style="background-color: #cbd5e1;">16:50 - 17:05</td>
+                    <td colspan="5">☕ 1º Intervalo / Recreio (15 min)</td>
+                </tr>
+
+                <!-- 4ª Aula -->
+                <tr>
+                    <td class="time-cell">17:05 - 17:55<small>4ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Português</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Inglês</div><div class="details">Prof. John | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Educação Física</div><div class="details">Prof. Marcos | Quadra</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Matemática</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Biologia</div><div class="details">Prof. Roberto | Sala 05</div></div></td>
+                </tr>
+
+                <!-- 5ª Aula -->
+                <tr>
+                    <td class="time-cell">17:55 - 18:45<small>5ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Geografia</div><div class="details">Prof. Lucas | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Educação Física</div><div class="details">Prof. Marcos | Quadra</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Raciocínio Lógico</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Redação</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Sociologia</div><div class="details">Profª. Fernanda | Sala 05</div></div></td>
+                </tr>
+
+                <!-- 2º Intervalo / Jantar -->
+                <tr class="break-row major-break">
+                    <td class="time-cell" style="background-color: #94a3b8; color: #ffffff;">18:45 - 19:50</td>
+                    <td colspan="5">🍽️ 2º Intervalo / Jantar / Transição (1h 05min)</td>
+                </tr>
+
+                <!-- 6ª Aula -->
+                <tr>
+                    <td class="time-cell">19:50 - 20:40<small>6ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Biologia</div><div class="details">Prof. Roberto | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Matemática Fin.</div><div class="details">Prof. Carlos | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Filosofia</div><div class="details">Profª. Fernanda | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Química</div><div class="details">Prof. Roberto | Lab. 01</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Literatura</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                </tr>
+
+                <!-- 7ª Aula -->
+                <tr>
+                    <td class="time-cell">20:40 - 21:30<small>7ª Aula</small></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Espanhol / Projetos</div><div class="details">Prof. John | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Atualidades</div><div class="details">Prof. Lucas | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Oficina de Artes</div><div class="details">Profª. Marina | Ateliê</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Estudo Dirigido</div><div class="details">Profª. Ana | Sala 05</div></div></td>
+                    <td><div class="editable" contenteditable="true"><div class="subject">Lab. Exatas</div><div class="details">Prof. Carlos | Lab. 02</div></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
